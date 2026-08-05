@@ -13,21 +13,21 @@ func home(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	files:=[]string{
+	files := []string{
 		"./ui/html/base.tmpl",
 		"./ui/html/pages/home.tmpl",
 		"./ui/html/partials/nav.tmpl",
 	}
-	ts, err:=template.ParseFiles(files...)
-	if err!=nil{
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
 		log.Println(err.Error())
-		http.Error(w,"Internal Server Error",500)
+		http.Error(w, "Internal Server Error", 500)
 		return
 	}
-	err=ts.ExecuteTemplate(w,"base",nil)
-	if err!=nil{
+	err = ts.ExecuteTemplate(w, "base", nil)
+	if err != nil {
 		log.Println(err.Error())
-		http.Error(w,"Internal Server Error",500)
+		http.Error(w, "Internal Server Error", 500)
 	}
 }
 func snippetView(w http.ResponseWriter, r *http.Request) {
@@ -45,4 +45,8 @@ func snippetCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write([]byte("Create a new snippet..."))
+}
+func snippetCreatePost(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusCreated)
+	w.Write([]byte("Save a new snippet..."))
 }
