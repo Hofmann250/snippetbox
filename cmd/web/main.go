@@ -3,53 +3,50 @@ package main
 import (
 	"database/sql"
 	"flag"
-	"log"
 	"log/slog"
 	"net/http"
 	"os"
+	"snippetbox/internal/models"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 type application struct {
-	logger *slog.Logger
+	logger   *slog.Logger
+	snippets *models.SnippetModel
 }
 
 func main() {
 	addr := flag.String("addr", ":4000", "HTTP network address")
-	dsn:=flag.String("dsn","web:pass@/snippetbox?parseTime=true","MySQL data source name")
-	
+	dsn := flag.String("dsn", "web:pass@/snippetbox?parseTime=true", "MySQL data source name")
+
 	flag.Parse()
 
-	infoLog:=log.New(os.Stdout,"INFO\t",log.Ldate|log.Ltime)
-	errorLog:=log.New(os.Stderr,"ERROR\t",log.Ldate|log.Ltime|log.Lshortfile)
-	
-	db,err:=openDB(*dsn)
-	if err!=nil{
-		errorLog.Fatal(err)
+	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
+
+	db, err := openDB(*dsn)
+	if err != nil {
+		logger.Error(err.Error())
 	}
 	defer db.Close()
 	app := &application{
-		errorLog:errorLog,
-		infoLog:infoLog,
+		logger:   logger,
+		snippets: &models.SnippetModel{DB: db},
 	}
-	srv:=&http.Server{
-		Addr: *addr,
-		ErrorLog: errorLog,
-		Handler: app.routes(),
-	}
-	infoLog.Printf("Starting server on %s",*addr)
-	err =srv.ListenAndServe()
-	errorLog.Fatal(err)
+
+	logger.Info("starting server", "addr", *addr)
+	err = http.ListenAndServe(*addr, app.routes())
+	logger.Error(err.Error())
+	os.Exit(1)
 }
 
-func openDB(dsn string) (*sql.DB, error){
-db,err:=sql.Open("mysql",dsn)
-if err!=nil{
-	return nil, err
-}
-if err=db.Ping(); err!=nil{
-	return nil,err
-}
-return db, nil
+func openDB(dsn string) (*sql.DB, error) {
+	db, err := sql.Open("mysql", dsn)
+	if err != nil {
+		return nil, err
+	}
+	if err = db.Ping(); err != nil {
+		return nil, err
+	}
+	return db, nil
 }
