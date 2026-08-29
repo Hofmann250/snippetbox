@@ -6,7 +6,7 @@ import (
 	"snippetbox/internal/models"
 )
 
-type templateDate struct {
+type templateData struct {
 	Snippet  models.Snippet
 	Snippets []models.Snippet
 }
