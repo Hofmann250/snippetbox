@@ -64,13 +64,14 @@ func (app *application) requireAuthentication(next http.Handler) http.Handler {
 }
 
 func noSurf(next http.Handler) http.Handler {
-	csfHandler := nosurf.New(next)
-	csfHandler.SetBaseCookie(http.Cookie{
+	csrfHandler := nosurf.New(next)
+	csrfHandler.SetBaseCookie(http.Cookie{
 		HttpOnly: true,
 		Path:     "/",
-		Secure:   true,
+		Secure:   false,
 	})
-	return csfHandler
+
+	return csrfHandler
 }
 
 func (app *application) authenticate(next http.Handler) http.Handler {

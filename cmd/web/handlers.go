@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"log"
 
 	"net/http"
 	"snippetbox/internal/models"
@@ -110,6 +111,7 @@ func (app *application) userSignupPost(w http.ResponseWriter, r *http.Request) {
 	var form userSignupForm
 	err := app.decodePostForm(r, &form)
 	if err != nil {
+		log.Println("DECODE ERROR:", err) // <-- Выведет причину в консоль
 		app.clientError(w, http.StatusBadRequest)
 		return
 	}
@@ -125,7 +127,7 @@ func (app *application) userSignupPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = app.users.Inser(form.Name, form.Email, form.Password)
+	err = app.users.Insert(form.Name, form.Email, form.Password)
 	if err != nil {
 		if errors.Is(err, models.ErrDuplicateEmail) {
 			form.AddFieldError("email", "Email address is already in use")
