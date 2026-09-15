@@ -4,13 +4,6 @@ import (
 	"snippetbox/internal/models"
 )
 
-/*var mockUser = models.User{
-	ID:      1,
-	Name:    "Bod",
-	Email:   "example@gmail.com",
-	Created: time.Now(),
-}*/
-
 type UserModel struct{}
 
 func (m *UserModel) Insert(name, email, password string) error {
@@ -34,4 +27,7 @@ func (m *UserModel) Exists(id int) (bool, error) {
 	default:
 		return false, nil
 	}
+}
+func (m *UserModel) Get(id int) (models.User, error) {
+	return models.User{}, nil
 }
