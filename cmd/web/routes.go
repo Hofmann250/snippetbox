@@ -16,16 +16,19 @@ func (app *application) routes() http.Handler {
 
 	mux.Handle("GET /{$}", dinamic.ThenFunc(app.home))
 	mux.Handle("GET /snippet/view/{id}", dinamic.ThenFunc(app.snippetView))
-	mux.Handle("GET /user/signup", dinamic.ThenFunc(app.userSignup))
-	mux.Handle("POST /user/signup", dinamic.ThenFunc(app.userSignupPost))
-	mux.Handle("GET /user/login", dinamic.ThenFunc(app.userLogin))
-	mux.Handle("POST /user/login", dinamic.ThenFunc(app.userLoginPost))
-	mux.HandleFunc("GET /ping", app.ping)
 	mux.Handle("GET /about", dinamic.ThenFunc(app.about))
-	mux.Handle("GET /account/view", dinamic.ThenFunc(app.accountView))
+
+	unauthenticat := dinamic.Append(app.requireUnauthenticated)
+
+	mux.Handle("GET /user/signup", unauthenticat.ThenFunc(app.userSignup))
+	mux.Handle("POST /user/signup", unauthenticat.ThenFunc(app.userSignupPost))
+	mux.Handle("GET /user/login", unauthenticat.ThenFunc(app.userLogin))
+	mux.Handle("POST /user/login", unauthenticat.ThenFunc(app.userLoginPost))
+	mux.HandleFunc("GET /ping", app.ping)
 
 	protected := dinamic.Append(app.requireAuthentication)
 
+	mux.Handle("GET /account/view", protected.ThenFunc(app.accountView))
 	mux.Handle("POST /user/logout", protected.ThenFunc(app.userLogoutPost))
 	mux.Handle("GET /snippet/create", protected.ThenFunc(app.snippetCreate))
 	mux.Handle("POST /snippet/create", protected.ThenFunc(app.snippetCreatePost))
