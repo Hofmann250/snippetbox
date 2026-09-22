@@ -13,11 +13,13 @@
 Вид для зарегистрированного пользователя 
 
 <img width="2548" height="1289" alt="Image" src="https://github.com/user-attachments/assets/6d706c34-7736-4532-ad7a-d62cf2d9b4bf" />
+
 ## Технологии
 
 Окно создания сниппета 
 
 <img width="2548" height="1289" alt="Image" src="https://github.com/user-attachments/assets/40c4faab-d08d-47e9-b713-b36c76e266cf" />
+
 Go 1.26, MySQL 8.4, Docker Compose
 
 ## Быстрый старт
