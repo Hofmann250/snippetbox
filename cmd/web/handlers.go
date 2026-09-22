@@ -38,9 +38,6 @@ type userPasswordUpdateForm struct {
 	validator.Validator     `form:"-"`
 }
 
-func (app *application) ping(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("ok"))
-}
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
 
 	snippets, err := app.snippets.Latest()
